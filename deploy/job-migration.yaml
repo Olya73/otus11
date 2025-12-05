@@ -1,0 +1,43 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pg-migration
+spec:
+  backoffLimit: 0
+  completions: 1
+  parallelism: 1
+  ttlSecondsAfterFinished: 300
+  template:
+    metadata:
+      labels:
+        app: pg-migration
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: pg-migration
+        image: olya73/my-liquibase:5.0.1-postgres
+        args: ["update", "--changelog-file=db.changelog-master.yaml","--log-level=FINE"]
+        env:
+        - name: LIQUIBASE_COMMAND_URL
+          value: "jdbc:postgresql://my-pg-postgresql:5432/otus"
+        - name: LIQUIBASE_COMMAND_USERNAME
+          value: "migration_user"
+        - name: LIQUIBASE_COMMAND_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: migration-secret
+              key: pg_password
+        - name: LIQUIBASE_SEARCH_PATH
+          value: "/liquibase/changelog/"
+        volumeMounts:
+        - name: liquibase-changelog-volume
+          mountPath: /liquibase/changelog
+        - name: liquibase-changelogv100-volume
+          mountPath: /liquibase/changelog/v1.0.0
+      volumes:
+        - name: liquibase-changelog-volume
+          configMap:
+            name: liquibase-changelog-master
+        - name: liquibase-changelogv100-volume
+          configMap:
+            name: liquibase-changelogv1.0.0
