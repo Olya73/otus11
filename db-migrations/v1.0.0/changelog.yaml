@@ -1,0 +1,6 @@
+# лог для объектов версии v 1.0.0
+databaseChangeLog:
+    - include:
+        file: v1.0.0/create-table-user.sql
+    - include:
+        file: v1.0.0/insert-user-data.sql

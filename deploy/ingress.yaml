@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: minimal-api-ingress
+  name: user-service-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
     nginx.ingress.kubernetes.io/use-regex: "true"
@@ -15,13 +15,13 @@ spec:
         pathType: ImplementationSpecific
         backend:
           service:
-            name: minimal-api-service
+            name: user-service-service
             port:
               number: 80
       - path: /otusapp/[a-z]*/(.*)
         pathType: ImplementationSpecific
         backend:
           service:
-            name: minimal-api-service
+            name: user-service-service
             port:
               number: 80

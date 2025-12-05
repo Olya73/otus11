@@ -1,0 +1,14 @@
+global:
+  imageRegistry: docker.io
+image:
+  repository: bitnami/postgresql
+  tag: latest
+auth:
+  existingSecret: pg-auth-secret
+  username: migration_user
+  database: otus
+primary:
+  persistence:
+    existingClaim: pg-pvc
+volumePermissions:
+  enabled: true

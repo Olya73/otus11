@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: minimal-api-deployment
+  name: user-service-deployment
   labels:
-    app: minimal-api
+    app: user-service
 spec:
   replicas: 3
   strategy:
@@ -20,8 +20,8 @@ spec:
         env: dev
     spec:
       containers:
-      - name: minimal-api
-        image: olya73/minimal-api:1.0
+      - name: user-service
+        image: olya73/user-service:2.0
         ports:
         - containerPort: 8000
         livenessProbe:
@@ -30,3 +30,9 @@ spec:
             port: 8000
           initialDelaySeconds: 3
           periodSeconds: 5
+        env:
+        - name: ConnectionStrings__PostgreSqlConnectionString
+          valueFrom:
+            secretKeyRef:
+              name: api-secret
+              key: connection_string
